@@ -14,34 +14,49 @@ SPDX-License-Identifier: MIT
 [![Deployment](https://github.com/StanfordBDHG/ENGAGE-HF-Web-Frontend/actions/workflows/deployment.yml/badge.svg)](https://github.com/StanfordBDHG/ENGAGE-HF-Web-Frontend/actions/workflows/deployment.yml)
 [![codecov](https://codecov.io/gh/StanfordBDHG/ENGAGE-HF-Web-Frontend/graph/badge.svg?token=PsKyNz7Woe)](https://codecov.io/gh/StanfordBDHG/ENGAGE-HF-Web-Frontend)
 
-## How To Use ENGAGE-HF Web Frontend
+Web Frontend for the ENGAGE-HF project.
 
-The ENGAGE-HF Web Frontend repository contains a Next.js project providing automated GitHub Actions and setups for code linting, testing & test coverage reports, docker deployments, a docker compose setup, local packages for modular deployment.
+## Behavior
 
-## Getting Started
+The frontend allows providers and study coordinators to manage patients, enter medications, lab values, allergies, appointments and manage the ENGAGE-HF study.
 
-You can run the project using the following command. You will need to install Node.js and npm, e.g., using [homebrew (recommended for macOS)](https://formulae.brew.sh/formula/node) or the official [Node.js installer](https://nodejs.org/en/download).
+![Application](resources/appScreenshot.png)
 
-1. Install All Dependencies
+## Stack
+
+The ENGAGE-HF Web Frontend repository contains a React application built with TypeScript, Vite and Firebase. It provides automated GitHub Actions, setups for code linting, testing & test coverage reports, docker deployments, a docker compose setup.
+
+## Getting started
+
+This project uses Node.js v22. Install Node.js, e.g. using [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating), [homebrew (for macOS)](https://formulae.brew.sh/formula/node) or the official [Node.js installer](https://nodejs.org/en/download) .
+
+### Backend
+
+In order to use Web Frontend, you need to use actual Firebase environment or Emulator with seeded data. For developing locally, it's best to use the Emulator.
+
+1. Clone `https://github.com/StanfordBDHG/ENGAGE-HF-Firebase` repository
+
+2. In the root of ENGAGE-HF-Firebase run:
+
+```bash
+npm run prepare && npm run serve:seeded
+```
+
+Repeat step 2 each time files have changed.
+
+Refer to [ENGAGE-HF-Firebase](https://github.com/StanfordBDHG/ENGAGE-HF-Firebase) repository for more details.
+
+### Dashboard
+
+1. Install all dependencies
 
 ```bash
 npm install
 ```
 
-2. Setup Firebase Environment Values
+2. Setup environment variables
 
-Create an `.env.local` file or inject the following environment variables required for the Google Firebase Setup:
-
-```
-VITE_PUBLIC_FIREBASE_API_KEY=
-VITE_PUBLIC_FIREBASE_AUTH_DOMAIN=
-VITE_PUBLIC_FIREBASE_PROJECT_ID=
-VITE_PUBLIC_FIREBASE_STORAGE_BUCKET=
-VITE_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-VITE_PUBLIC_FIREBASE_APP_ID=
-VITE_PUBLIC_EMULATOR=
-VITE_PUBLIC_EMAIL_PASSWORD_SIGN_IN=""
-```
+Refer [.env.example](.env.example) file for environment variables documentation. Copy `.env.example` to `.env.local` and adjust if necessary.
 
 3. Start the Vite Application
 
@@ -49,9 +64,7 @@ VITE_PUBLIC_EMAIL_PASSWORD_SIGN_IN=""
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can edit the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
 
 ## Docker
 
