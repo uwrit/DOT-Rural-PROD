@@ -8,9 +8,7 @@
 
 import type { ComponentProps } from "react";
 
-type LogoProps = ComponentProps<"svg"> & {
-  className?: string;
-};
+type LogoProps = ComponentProps<"svg">;
 
 export const Logo = (props: LogoProps) => (
   <svg
