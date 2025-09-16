@@ -34,7 +34,6 @@ const SignIn = () => (
             />
           ),
         },
-
       ]}
       enableEmailPassword={env.VITE_PUBLIC_EMAIL_PASSWORD_SIGN_IN}
       auth={auth}
