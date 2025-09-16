@@ -13,9 +13,7 @@ import { Helmet } from "react-helmet";
 import { AsideEngageLayout } from "@/components/AsideEngageLayout";
 import { env } from "@/env";
 import { auth, authProvider } from "@/modules/firebase/app";
-import johnsHopkingsLogoImg from "./johnsHopkinsLogo.png";
-import michiganLogoImg from "./michiganLogo.png";
-import stanfordLogoImg from "./stanfordLogo.png";
+import uwLogoImg from "./W-Logo_Purple_RGB.png";
 
 const SignIn = () => (
   <AsideEngageLayout>
@@ -26,38 +24,17 @@ const SignIn = () => (
       className="mx-auto w-[350px]"
       providers={[
         {
-          name: "Stanford",
-          provider: authProvider.stanford,
+          name: "University of Washington",
+          provider: authProvider.uw,
           icon: (
             <img
-              src={stanfordLogoImg}
-              alt="Stanford University logo"
+              src={uwLogoImg}
+              alt="University of Washington logo"
               className="w-[22px]"
             />
           ),
         },
-        {
-          name: "Johns Hopkins",
-          provider: authProvider.johnsHopkins,
-          icon: (
-            <img
-              src={johnsHopkingsLogoImg}
-              alt="Johns Hopkins University logo"
-              className="w-[32px]"
-            />
-          ),
-        },
-        {
-          name: "Michigan",
-          provider: authProvider.michigan,
-          icon: (
-            <img
-              src={michiganLogoImg}
-              alt="University of Michigan logo"
-              className="w-[51px]"
-            />
-          ),
-        },
+
       ]}
       enableEmailPassword={env.VITE_PUBLIC_EMAIL_PASSWORD_SIGN_IN}
       auth={auth}

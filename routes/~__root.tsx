@@ -33,7 +33,7 @@ const Root = () => (
   <AuthProvider>
     <SpeziProvider router={routerProps}>
       <ReactQueryClientProvider>
-        <Helmet defaultTitle="ENGAGE-HF" titleTemplate="%s - ENGAGE-HF" />
+        <Helmet defaultTitle="ADOPT-HF" titleTemplate="%s - ADOPT-HF" />
         <Outlet />
         <Toaster />
       </ReactQueryClientProvider>

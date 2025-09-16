@@ -33,9 +33,7 @@ if (enableEmulation)
   connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
 
 export const authProvider = {
-  stanford: new OAuthProvider("oidc.stanford"),
-  johnsHopkins: new OAuthProvider("oidc.johnshopkins"),
-  michigan: new OAuthProvider("oidc.michigan"),
+  uw: new SAMLAuthProvider('saml.staging4.rit.uw.edu'),
 };
 
 export const db = getFirestore(firebaseApp);
