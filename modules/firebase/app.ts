@@ -34,6 +34,7 @@ if (enableEmulation)
 
 export const authProvider = {
   uw: new SAMLAuthProvider("saml.staging4.rit.uw.edu"),
+  uwidp: new SAMLAuthProvider("saml.idp.u.washington.edu"),
 };
 
 export const db = getFirestore(firebaseApp);
