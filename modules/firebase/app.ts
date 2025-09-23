@@ -12,7 +12,7 @@ import { type UserType } from "@stanfordbdhg/engagehf-models";
 import { toast } from "@stanfordspezi/spezi-web-design-system/components/Toaster";
 import { queryOptions } from "@tanstack/react-query";
 import { redirect } from "@tanstack/react-router";
-import { connectAuthEmulator, getAuth, SAMLAuthProvider } from "firebase/auth";
+import { connectAuthEmulator, getAuth, SAMLAuthProvider, OAuthProvider } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { env } from "@/env";
 import { firebaseConfig } from "@/modules/firebase/config";
@@ -35,6 +35,7 @@ if (enableEmulation)
 export const authProvider = {
   uw: new SAMLAuthProvider("saml.staging4.rit.uw.edu"),
   uwidp: new SAMLAuthProvider("saml.idp.u.washington.edu"),
+  uwoidc: new new OAuthProvider("oidc.entra.uw.edu"),
 };
 
 export const db = getFirestore(firebaseApp);

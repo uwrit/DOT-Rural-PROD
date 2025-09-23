@@ -25,7 +25,7 @@ const SignIn = () => (
       providers={[
         {
           name: "University of Washington",
-          provider: authProvider.uwidp,
+          provider: authProvider.uwoidc,
           icon: (
             <img
               src={uwLogoImg}

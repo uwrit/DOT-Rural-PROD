@@ -50,7 +50,7 @@ jobs:
         id: set-env
         run: |
           if [[ -z "${{ inputs.environment }}" ]]; then
-            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "environment=development" >> $GITHUB_OUTPUT
           else
             echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
           fi
