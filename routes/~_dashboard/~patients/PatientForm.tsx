@@ -7,7 +7,9 @@
 //
 
 import { Button } from "@stanfordspezi/spezi-web-design-system/components/Button";
+import { Checkbox } from "@stanfordspezi/spezi-web-design-system/components/Checkbox";
 import { DatePicker } from "@stanfordspezi/spezi-web-design-system/components/DatePicker";
+import { InfoButton } from "@stanfordspezi/spezi-web-design-system/components/InfoButton";
 import { Input } from "@stanfordspezi/spezi-web-design-system/components/Input";
 import {
   Select,
@@ -16,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@stanfordspezi/spezi-web-design-system/components/Select";
+import { SideLabel } from "@stanfordspezi/spezi-web-design-system/components/SideLabel";
+import { Tooltip } from "@stanfordspezi/spezi-web-design-system/components/Tooltip";
 import {
   Field,
   FormError,
@@ -27,18 +31,28 @@ import {
 } from "@stanfordspezi/spezi-web-design-system/modules/auth";
 import { z } from "zod";
 import { type User } from "@/modules/firebase/models";
+import { type ResourceType } from "@/modules/firebase/utils";
 
-export const patientFormSchema = z.object({
-  displayName: z.string(),
-  clinician: z.string().min(1, "Clinician is required"),
-  dateOfBirth: z.date().optional(),
-  providerName: z.preprocess(
-    (value) => (value === "" ? null : value),
-    z.string().nullable(),
-  ),
-});
+export const getPatientFormSchema = (isEmailRequired: boolean) =>
+  z.object({
+    email:
+      isEmailRequired ?
+        z.email().min(1, "Email is required")
+      : z.string().optional(),
+    displayName: z.string(),
+    clinician: z.string().min(1, "Clinician is required"),
+    dateOfBirth: z.date().optional(),
+    selfManaged: z.boolean(),
+    providerName: z.preprocess(
+      (value: string | null | undefined) =>
+        value === "" ? null : String(value),
+      z.string().nullable(),
+    ),
+  });
 
-export type PatientFormSchema = z.infer<typeof patientFormSchema>;
+export type PatientFormSchema = z.infer<
+  ReturnType<typeof getPatientFormSchema>
+>;
 
 interface PatientFormProps {
   clinicians: Array<{
@@ -49,11 +63,28 @@ interface PatientFormProps {
   userInfo?: Pick<UserInfo, "email" | "displayName" | "uid">;
   user?: Pick<
     User,
-    "organization" | "clinician" | "dateOfBirth" | "providerName"
+    | "organization"
+    | "clinician"
+    | "dateOfBirth"
+    | "providerName"
+    | "selfManaged"
+    | "type"
   >;
   onSubmit: (data: PatientFormSchema) => Promise<void>;
   clinicianPreselectId?: string;
+  resourceType?: ResourceType;
 }
+
+const parseDateOfBirth = (date: string) => {
+  const parts = date.split("T").at(0)?.split("-").map(Number);
+  const year = parts?.at(0);
+  const month = parts?.at(1);
+  const day = parts?.at(2);
+  if (year === undefined || month === undefined || day === undefined) {
+    throw new Error("Invalid date format");
+  }
+  return new Date(year, month - 1, day);
+};
 
 export const PatientForm = ({
   user,
@@ -61,15 +92,20 @@ export const PatientForm = ({
   userInfo,
   onSubmit,
   clinicianPreselectId,
+  resourceType,
 }: PatientFormProps) => {
   const isEdit = !!user;
+  const isEmailRequired = isEdit && resourceType === "user";
   const form = useForm({
-    formSchema: patientFormSchema,
+    formSchema: getPatientFormSchema(isEmailRequired),
     defaultValues: {
+      email: userInfo?.email ?? "",
       displayName: userInfo?.displayName ?? "",
       clinician: user?.clinician ?? clinicianPreselectId ?? "",
-      dateOfBirth: user?.dateOfBirth ? new Date(user.dateOfBirth) : undefined,
+      dateOfBirth:
+        user?.dateOfBirth ? parseDateOfBirth(user.dateOfBirth) : undefined,
       providerName: user?.providerName ?? "",
+      selfManaged: user?.selfManaged ?? false,
     },
   });
 
@@ -83,6 +119,21 @@ export const PatientForm = ({
         prefix={`${isEdit ? "Updating" : "Inviting"} patient failed. `}
         formError={form.formError}
       />
+      {isEmailRequired && (
+        <Field
+          control={form.control}
+          name="email"
+          label="Email"
+          tooltip={
+            <>
+              Users use this email to login to the app. <br />
+              Changing this email might cause troubles with accessing the
+              account.
+            </>
+          }
+          render={({ field }) => <Input {...field} />}
+        />
+      )}
       <Field
         control={form.control}
         name="displayName"
@@ -137,6 +188,29 @@ export const PatientForm = ({
         }
         render={({ field }) => <Input {...field} value={field.value ?? ""} />}
       />
+      {!isEdit && (
+        <Field
+          control={form.control}
+          name="selfManaged"
+          render={({ field }) => {
+            const { value, onChange, ...restField } = field;
+            return (
+              <div className="flex items-center gap-2">
+                <SideLabel label="Is self managed">
+                  <Checkbox
+                    checked={value}
+                    onCheckedChange={onChange}
+                    {...restField}
+                  />
+                </SideLabel>
+                <Tooltip tooltip="This feature allows patients to enter their own medication and laboratory value updates.">
+                  <InfoButton />
+                </Tooltip>
+              </div>
+            );
+          }}
+        />
+      )}
       <Button type="submit" isPending={form.formState.isSubmitting}>
         {isEdit ? "Update" : "Invite"} patient
       </Button>

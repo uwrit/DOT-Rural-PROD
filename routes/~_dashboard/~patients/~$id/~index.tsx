@@ -51,6 +51,7 @@ import {
   getMedicationsData,
   getMeasurementsData,
   getPatientInfo,
+  formatBirthDate,
 } from "@/routes/~_dashboard/~patients/utils";
 import { Allergies } from "@/routes/~_dashboard/~patients/~$id/Allergies";
 import { Appointments } from "@/routes/~_dashboard/~patients/~$id/Appointments";
@@ -118,14 +119,17 @@ const PatientPage = () => {
     const userData = {
       clinician: form.clinician,
       organization: clinician.organization,
-      dateOfBirth: form.dateOfBirth?.toISOString() ?? null,
+      dateOfBirth: formatBirthDate(form.dateOfBirth),
       providerName: form.providerName,
     };
     if (resourceType === "user") {
       await callables.updateUserInformation({
         userId,
         data: {
-          auth: authData,
+          auth: {
+            ...authData,
+            email: form.email,
+          },
         },
       });
       await updateDoc(docRefs.user(userId), userData);
@@ -233,6 +237,7 @@ const PatientPage = () => {
               user={user}
               userInfo={authUser}
               onSubmit={updatePatient}
+              resourceType={resourceType}
               {...formProps}
             />
           </div>
@@ -269,7 +274,7 @@ const PatientPage = () => {
 export const Route = createFileRoute("/_dashboard/patients/$id/")({
   component: PatientPage,
   validateSearch: z.object({
-    tab: z.nativeEnum(PatientPageTab).optional().catch(undefined),
+    tab: z.enum(PatientPageTab).optional().catch(undefined),
   }),
   notFoundComponent: () => (
     <NotFound

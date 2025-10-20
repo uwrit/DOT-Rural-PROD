@@ -52,6 +52,7 @@ export const quantityOptions = [
   { label: "0.5 tbl.", value: 0.5 },
   { label: "1 tbl.", value: 1 },
   { label: "2 tbl.", value: 2 },
+  { label: "3 tbl.", value: 3 },
 ];
 
 export const timesPerDayOptions = [
@@ -65,8 +66,8 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       instructions: z.string(),
-      medication: z.string({ required_error: "Medication is required" }),
-      drug: z.string({ required_error: "Drug is required" }),
+      medication: z.string({ error: "Medication is required" }),
+      drug: z.string({ error: "Drug is required" }),
       quantity: z.number().min(0),
       frequencyPerDay: z.number().min(0),
     }),
@@ -271,6 +272,16 @@ export const Medications = ({
                             <SelectValue placeholder="Drug" />
                           </SelectTrigger>
                           <SelectContent>
+                            {!quantityOptions.some(
+                              (option) => option.value === field.value,
+                            ) && (
+                              <SelectItem
+                                key={field.value}
+                                value={String(field.value)}
+                              >
+                                {field.value} tbl.
+                              </SelectItem>
+                            )}
                             {quantityOptions.map((option) => (
                               <SelectItem
                                 key={option.value}
@@ -302,6 +313,16 @@ export const Medications = ({
                             <SelectValue placeholder="Frequency" />
                           </SelectTrigger>
                           <SelectContent>
+                            {!timesPerDayOptions.some(
+                              (option) => option.value === field.value,
+                            ) && (
+                              <SelectItem
+                                key={field.value}
+                                value={String(field.value)}
+                              >
+                                {field.value} times a day
+                              </SelectItem>
+                            )}
                             {timesPerDayOptions.map((option) => (
                               <SelectItem
                                 key={option.value}
